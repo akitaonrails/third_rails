@@ -19,8 +19,6 @@ module Rspec
       class_option :skip_integration_specs, :type => :boolean,
                                             :desc => "When supplied skip integration specs"
 
-      hook_for :integration_tool, :as => :integration
-
       def copy_controller_files
         template 'controller_spec.rb',
                  File.join('spec/controllers', controller_class_path, "#{controller_file_name}_controller_spec.rb")
@@ -41,6 +39,8 @@ module Rspec
         template 'routing_spec.rb',
                  File.join('spec/routing', controller_class_path, "#{controller_file_name}_routing_spec.rb")
       end
+
+      hook_for :integration_tool, :as => :integration
 
       protected
 
