@@ -16,6 +16,6 @@ config.generators do |g|
   g.orm             = :active_record
   g.stylesheets     = true
   g.template_engine = :erb
-  g.test_framework  = :test_unit
+  g.test_framework  = :rspec
   g.timestamps      = true
 end
