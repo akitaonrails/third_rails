@@ -7,6 +7,11 @@ module Datamapper
     class Base < Rails::Generators::NamedBase #:nodoc:
       include Rails::Generators::Migration
 
+      def self.source_root
+        @_datamapper_source_root ||= File.expand_path(File.join(File.dirname(__FILE__),
+                                                      'datamapper', generator_name, 'templates'))
+      end
+
       protected
 
         # Datamapper does not care if migrations have the same name as long as

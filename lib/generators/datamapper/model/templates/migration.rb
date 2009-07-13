@@ -1,4 +1,4 @@
-migration <%= migration_number.to_i %>, <%= migration_file_name > do
+migration <%= migration_number.to_i %>, <%= migration_file_name %> do
   up do
     create_table :<%= table_name %> do
 <% attributes.each do |attribute| -%>
