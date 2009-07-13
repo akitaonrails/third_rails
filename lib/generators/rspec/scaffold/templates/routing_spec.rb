@@ -2,9 +2,11 @@ require File.expand_path(File.dirname(__FILE__) + '<%= '/..' * class_nesting_dep
 
 describe <%= controller_class_name %>Controller do
   describe "route generation" do
+    <% unless options[:singleton] -%>
     it "maps #index" do
       route_for(:controller => "<%= table_name %>", :action => "index").should == "/<%= table_name %>"
     end
+    <% end -%>
 
     it "maps #new" do
       route_for(:controller => "<%= table_name %>", :action => "new").should == "/<%= table_name %>/new"
@@ -32,9 +34,11 @@ describe <%= controller_class_name %>Controller do
   end
 
   describe "route recognition" do
+    <% unless options[:singleton] -%>
     it "generates params for #index" do
       params_from(:get, "/<%= table_name %>").should == {:controller => "<%= table_name %>", :action => "index"}
     end
+    <% end -%>
 
     it "generates params for #new" do
       params_from(:get, "/<%= table_name %>/new").should == {:controller => "<%= table_name %>", :action => "new"}

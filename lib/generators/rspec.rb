@@ -9,3 +9,17 @@ module Rspec
     end
   end
 end
+
+module Rails
+  module Generators
+    class GeneratedAttribute #:nodoc:
+      def input_type
+        @input_type ||= if type == :text
+          "textarea"
+        else
+          "input"
+        end
+      end
+    end
+  end
+end

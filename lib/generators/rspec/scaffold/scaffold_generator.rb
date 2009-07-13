@@ -4,16 +4,39 @@ module Rspec
   module Generators
     class ScaffoldGenerator < Base
       include Rails::Generators::ScaffoldBase
+      argument :attributes, :type => :hash, :default => {}
 
-      class_option :orm, :desc => "ORM used on scaffolded controller."
+      class_option :orm, :desc => "ORM used to generate the controller"
+      class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :singleton, :type => :boolean, :desc => "Supply to create a singleton controller"
 
-      def create_test_files
+      def copy_controller_files
         template 'controller_spec.rb',
                  File.join('spec/controllers', controller_class_path, "#{controller_file_name}_controller_spec.rb")
       end
 
+      def copy_view_files
+        copy_view :edit
+        copy_view :index unless options[:singleton]
+        copy_view :new
+        copy_view :show
+      end
+
+      def copy_routing_files
+        template 'routing_spec.rb',
+                 File.join('spec/routing', controller_class_path, "#{controller_file_name}_routing_spec.rb")
+      end
+
       protected
+
+        def copy_view(view)
+          template "#{view}_spec.rb",
+                   File.join("spec/views", controller_file_path, "#{view}.#{options[:template_engine]}_spec.rb")
+        end
+
+        def params
+          "{'these' => 'params'}"
+        end
 
         # Returns the name of the mock. For example, if the file name is user,
         # it returns mock_user.

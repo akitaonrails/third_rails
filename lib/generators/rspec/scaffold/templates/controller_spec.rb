@@ -6,6 +6,7 @@ describe <%= controller_class_name %>Controller do
     @<%= mock_file_name %> ||= mock_model(<%= class_name %>, stubs)
   end
 
+  <% unless options[:singleton] -%>
   describe "GET index" do
     it "assigns all <%= table_name.pluralize %> as @<%= table_name.pluralize %>" do
       <%= stub! orm_class.all(class_name) %>.and_return([<%= mock_file_name %>])
@@ -13,6 +14,7 @@ describe <%= controller_class_name %>Controller do
       assigns[:<%= table_name %>].should == [<%= mock_file_name %>]
     end
   end
+  <% end -%>
 
   describe "GET show" do
     it "assigns the requested <%= file_name %> as @<%= file_name %>" do
@@ -42,8 +44,8 @@ describe <%= controller_class_name %>Controller do
 
     describe "with valid params" do
       it "assigns a newly created <%= file_name %> as @<%= file_name %>" do
-        <%= stub! orm_class.build(class_name, "{'these' => 'params'}") %>.and_return(<%= mock_file_name(:save => true) %>)
-        post :create, :<%= file_name %> => {:these => 'params'}
+        <%= stub! orm_class.build(class_name, params) %>.and_return(<%= mock_file_name(:save => true) %>)
+        post :create, :<%= file_name %> => <%= params %>
         assigns[:<%= file_name %>].should equal(<%= mock_file_name %>)
       end
 
@@ -56,8 +58,8 @@ describe <%= controller_class_name %>Controller do
 
     describe "with invalid params" do
       it "assigns a newly created but unsaved <%= file_name %> as @<%= file_name %>" do
-        <%= stub! orm_class.build(class_name, "{'these' => 'params'}") %>.and_return(<%= mock_file_name(:save => false) %>)
-        post :create, :<%= file_name %> => {:these => 'params'}
+        <%= stub! orm_class.build(class_name, params) %>.and_return(<%= mock_file_name(:save => false) %>)
+        post :create, :<%= file_name %> => <%= params %>
         assigns[:<%= file_name %>].should equal(<%= mock_file_name %>)
       end
 
@@ -74,39 +76,33 @@ describe <%= controller_class_name %>Controller do
 
     describe "with valid params" do
       it "updates the requested <%= file_name %>" do
-        <%= class_name %>.should_receive(:find).with("37").and_return(<%= mock_file_name %>)
-        mock_<%= file_name %>.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :<%= file_name %> => {:these => 'params'}
+        <%= should! orm_class.find(class_name, "37".inspect) %>.and_return(<%= mock_file_name %>)
+        mock_<%= should! orm_instance.update_attributes(params) %>
+        put :update, :id => "37", :<%= file_name %> => <%= params %>
       end
 
       it "assigns the requested <%= file_name %> as @<%= file_name %>" do
-        <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name %>(:update_attributes => true) %>)
+        <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name(:update_attributes => true) %>)
         put :update, :id => "1"
         assigns[:<%= file_name %>].should equal(<%= mock_file_name %>)
       end
 
       it "redirects to the <%= file_name %>" do
-        <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name %>(:update_attributes => true) %>)
+        <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name(:update_attributes => true) %>)
         put :update, :id => "1"
         response.should redirect_to(<%= table_name.singularize %>_url(<%= mock_file_name %>))
       end
     end
 
     describe "with invalid params" do
-      it "updates the requested <%= file_name %>" do
-        <%= class_name %>.should_receive(:find).with("37").and_return(<%= mock_file_name %>)
-        mock_<%= file_name %>.should_receive(:update_attributes).with({'these' => 'params'})
-        put :update, :id => "37", :<%= file_name %> => {:these => 'params'}
-      end
-
       it "assigns the <%= file_name %> as @<%= file_name %>" do
-        <%= class_name %>.stub!(:find).and_return(<%= mock_file_name(:update_attributes => false) %>)
+        <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name(:update_attributes => false) %>)
         put :update, :id => "1"
         assigns[:<%= file_name %>].should equal(<%= mock_file_name %>)
       end
 
       it "re-renders the 'edit' template" do
-        <%= class_name %>.stub!(:find).and_return(<%= mock_file_name %>(:update_attributes => false))
+        <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name(:update_attributes => false) %>)
         put :update, :id => "1"
         response.should render_template('edit')
       end
@@ -116,13 +112,13 @@ describe <%= controller_class_name %>Controller do
 
   describe "DELETE destroy" do
     it "destroys the requested <%= file_name %>" do
-      <%= class_name %>.should_receive(:find).with("37").and_return(mock_<%= file_name %>)
+      <%= should! orm_class.find(class_name, "37".inspect) %>.and_return(<%= mock_file_name %>)
       mock_<%= should! orm_instance.destroy %>
       delete :destroy, :id => "37"
     end
 
     it "redirects to the <%= table_name %> list" do
-      <%= class_name %>.stub!(:find).and_return(<%= mock_file_name(:destroy => true) %>)
+      <%= stub! orm_class.find(class_name) %>.and_return(<%= mock_file_name(:destroy => true) %>)
       delete :destroy, :id => "1"
       response.should redirect_to(<%= table_name %>_url)
     end
