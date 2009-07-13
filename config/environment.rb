@@ -55,6 +55,7 @@ Rails::Initializer.run do |config|
 
     # Test framework config
     g.test_framework    = :rspec
+    g.integration_tool  = :rspec
     g.fixtures          = true
     g.skip_views_specs  = true
     g.skip_routes_specs = false

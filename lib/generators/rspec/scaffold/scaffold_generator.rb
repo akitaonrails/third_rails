@@ -10,11 +10,16 @@ module Rspec
       class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :singleton, :type => :boolean, :desc => "Supply to create a singleton controller"
 
-      class_option :skip_views_specs,  :type => :boolean,
-                                       :desc => "When supplied skip routes specs"
+      class_option :skip_views_specs, :type => :boolean,
+                                      :desc => "When supplied skip routes specs"
 
       class_option :skip_routes_specs, :type => :boolean,
                                        :desc => "When supplied skip views specs"
+
+      class_option :skip_integration_specs, :type => :boolean,
+                                            :desc => "When supplied skip integration specs"
+
+      hook_for :integration_tool, :as => :integration
 
       def copy_controller_files
         template 'controller_spec.rb',
@@ -41,7 +46,7 @@ module Rspec
 
         def copy_view(view)
           template "#{view}_spec.rb",
-                   File.join("spec/views", controller_file_path, "#{view}.#{options[:template_engine]}_spec.rb")
+                   File.join("spec/views", controller_file_path, "#{view}.html.#{options[:template_engine]}_spec.rb")
         end
 
         def params
