@@ -19,6 +19,20 @@ And you need to install my fork of Thor on github as a gem:
 It includes generators for datamapper and rspec to show how agnosticism works.
 Check them at "lib/generators" and their configuration at "config/environments/generators.rb".
 
+== Usage
+
+  # Show available generators
+  ruby script/generate
+
+  # Install rspec
+  ruby script/generate rspec:install
+
+  # Show scaffold options
+  ruby script/generate scaffold
+
+  # Invoke!
+  ruby script/generate scaffold Model
+
 == Finally... Welcome to Rails 3.0!
 
 Rails is a web-application framework that includes everything needed to create 

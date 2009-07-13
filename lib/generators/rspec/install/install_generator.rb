@@ -1,7 +1,11 @@
 module Rspec
   module Generators
-    class InstallGenerator < Base
+    class InstallGenerator < Rails::Generators::Base
       add_shebang_option!
+
+      def self.source_root
+        @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
+      end
 
       def copy_lib_files
         directory 'lib'
