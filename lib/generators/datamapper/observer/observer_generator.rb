@@ -1,6 +1,6 @@
-require 'generators/active_record'
+require 'generators/datamapper'
 
-module ActiveRecord
+module Datamapper
   module Generators
     class ObserverGenerator < Base
       check_class_collision :suffix => "Observer"
