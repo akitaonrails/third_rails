@@ -47,7 +47,7 @@ Rails::Initializer.run do |config|
     g.stylesheets = true
 
     # ORM config
-    g.orm        = :active_record
+    g.orm        = :datamapper
     g.timestamps = true
 
     # Template engine config
