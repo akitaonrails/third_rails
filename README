@@ -17,7 +17,7 @@ And you need to install my fork of Thor on github as a gem:
 == Why?
 
 It includes generators for datamapper and rspec to show how agnosticism works.
-Check them at "lib/generators" and their configuration at "config/environments/generators.rb".
+Check them at "lib/generators" and their configuration at "config/environment.rb".
 
 == Usage
 
