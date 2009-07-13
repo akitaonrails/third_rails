@@ -9,13 +9,21 @@ config.whiny_nils = true
 # No frameworks here.
 config.frameworks.clear
 
-# Configure generators options (below are default values, delete them if you want).
 config.generators do |g|
-  g.helper          = true
-  g.layout          = true
-  g.orm             = :active_record
-  g.stylesheets     = true
+  # Scaffold config
+  g.helper      = true
+  g.layout      = true
+  g.stylesheets = true
+
+  # ORM config
+  g.orm        = :active_record
+  g.timestamps = true
+
+  # Template engine config
   g.template_engine = :erb
-  g.test_framework  = :rspec
-  g.timestamps      = true
+
+  # Test framework config
+  g.test_framework    = :rspec
+  g.skip_views_specs  = true
+  g.skip_routes_specs = false
 end
