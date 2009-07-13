@@ -8,7 +8,7 @@ describe "/<%= table_name %>/edit.<%= options[:template_engine] %>" do
     assigns[:<%= file_name %>] = @<%= file_name %> = stub_model(<%= class_name %>,
       :new_record? => false<%= output_attributes.empty? ? '' : ',' %>
 <% output_attributes.each_with_index do |attribute, attribute_index| -%>
-      :<%= attribute.name %> => <%= attribute.default %><%= attribute_index == output_attributes.length - 1 ? '' : ','%>
+      :<%= attribute.name %> => <%= attribute.default.inspect %><%= attribute_index == output_attributes.length - 1 ? '' : ','%>
 <% end -%>
     )
   end
