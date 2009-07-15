@@ -41,23 +41,27 @@ Rails::Initializer.run do |config|
 
   # Generators configuration
   config.generators do |g|
-    # Scaffold config
-    g.helper      = true
-    g.layout      = true
-    g.stylesheets = true
+    g.rails do |r|
+      r.helper = true
+      r.stylesheets = true
+    end
 
-    # ORM config
-    g.orm        = :datamapper
-    g.timestamps = true
+    g.orm :datamapper do |dm|
+      dm.migration  = true
+      dm.timestamps = true
+    end
 
-    # Template engine config
-    g.template_engine = :erb
+    g.template_engine :erb do |e|
+      e.layout = true
+    end
 
-    # Test framework config
-    g.test_framework    = :rspec
-    g.integration_tool  = :rspec
-    g.fixtures          = true
-    g.skip_views_specs  = true
-    g.skip_routes_specs = false
+    g.test_framework :rspec do |r|
+      r.fixtures         = true
+      r.integration_tool = false
+      r.spec_views       = false
+      r.spec_routes      = true
+    end
+
+    g.integration_tool = :rspec
   end
 end
