@@ -41,27 +41,16 @@ Rails::Initializer.run do |config|
 
   # Generators configuration
   config.generators do |g|
-    g.rails do |r|
-      r.helper = true
-      r.stylesheets = true
-    end
+    g.orm              :datamapper
 
-    g.orm :datamapper do |dm|
-      dm.migration  = true
-      dm.timestamps = true
-    end
+    g.template_engine  :erb, :layout => true
 
-    g.template_engine :erb do |e|
-      e.layout = true
-    end
+    g.test_framework   :rspec,
+                       :fixtures => true,
+                       :integration_tool => false,
+                       :spec_routes => true,
+                       :spec_views => false
 
-    g.test_framework :rspec do |r|
-      r.fixtures         = true
-      r.integration_tool = false
-      r.spec_views       = false
-      r.spec_routes      = true
-    end
-
-    g.integration_tool = :rspec
+    g.integration_tool :rspec
   end
 end
