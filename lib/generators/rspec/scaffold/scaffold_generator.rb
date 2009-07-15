@@ -19,7 +19,7 @@ module Rspec
       end
 
       def copy_view_files
-        return unless options[:specs_views]
+        return unless options[:spec_views]
 
         copy_view :edit
         copy_view :index unless options[:singleton]
@@ -28,7 +28,7 @@ module Rspec
       end
 
       def copy_routing_files
-        return unless options[:specs_routes]
+        return unless options[:spec_routes]
 
         template 'routing_spec.rb',
                  File.join('spec/routing', controller_class_path, "#{controller_file_name}_routing_spec.rb")
