@@ -10,11 +10,8 @@ module Rspec
       class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :singleton, :type => :boolean, :desc => "Supply to create a singleton controller"
 
-      class_option :spec_views, :type => :boolean,
-                                :desc => "When supplied skip routes specs"
-
-      class_option :spec_routes, :type => :boolean,
-                                 :desc => "When supplied skip views specs"
+      class_option :spec_views,  :type => :boolean
+      class_option :spec_routes, :type => :boolean
 
       def copy_controller_files
         template 'controller_spec.rb',
