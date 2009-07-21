@@ -72,8 +72,8 @@ module Rails
   module Generators
     class GeneratedAttribute #:nodoc:
       def type_class
-        return 'DateTime' if type == 'datetime'
-        return type.camelcase
+        return 'DateTime' if type.to_s == 'datetime'
+        return type.to_s.camelcase
       end
     end
   end
