@@ -4,7 +4,7 @@ module Rspec
   module Generators
     class ScaffoldGenerator < Base
       include Rails::Generators::ScaffoldBase
-      argument :attributes, :type => :hash, :default => {}
+      argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
 
       class_option :orm, :desc => "ORM used to generate the controller"
       class_option :template_engine, :desc => "Template engine to generate view files"

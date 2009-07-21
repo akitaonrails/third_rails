@@ -3,7 +3,7 @@ require 'generators/datamapper'
 module Datamapper
   module Generators
     class MigrationGenerator < Base
-      argument :attributes, :type => :hash, :default => {}, :banner => "field:type field:type"
+      argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
       class_option :id, :type => :numeric, :desc => "The id to be used in this migration"
 
       def create_migration_file
