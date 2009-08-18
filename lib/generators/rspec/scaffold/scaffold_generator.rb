@@ -10,8 +10,8 @@ module Rspec
       class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :singleton, :type => :boolean, :desc => "Supply to create a singleton controller"
 
-      class_option :spec_views,  :type => :boolean
-      class_option :spec_routes, :type => :boolean
+      class_option :views,  :type => :boolean, :default => true
+      class_option :routes, :type => :boolean, :default => true
 
       def copy_controller_files
         template 'controller_spec.rb',
@@ -19,7 +19,7 @@ module Rspec
       end
 
       def copy_view_files
-        return unless options[:spec_views]
+        return unless options[:views]
 
         copy_view :edit
         copy_view :index unless options[:singleton]
@@ -28,7 +28,7 @@ module Rspec
       end
 
       def copy_routing_files
-        return unless options[:spec_routes]
+        return unless options[:routes]
 
         template 'routing_spec.rb',
                  File.join('spec/routing', controller_class_path, "#{controller_file_name}_routing_spec.rb")

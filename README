@@ -1,14 +1,13 @@
 = Third Rails
 
-A fresh Rails 3.0 app from my fork with generators:
-
-  http://github.com/josevalim/rails
+This is a proof of concept with Rails 3.0 generators.
 
 == Dependencies
 
 Rails is vendored:
 
-  git submodule update --init
+  git submodule init
+  git submodule update
 
 == Why?
 
@@ -27,7 +26,7 @@ Check them at "lib/generators" and their configuration at "config/environment.rb
   ruby script/generate scaffold
 
   # Invoke!
-  ruby script/generate scaffold Model
+  ruby script/generate scaffold ModelName
 
 == Finally... Welcome to Rails 3.0!
 

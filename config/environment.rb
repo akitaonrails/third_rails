@@ -48,8 +48,8 @@ Rails::Initializer.run do |config|
     g.test_framework   :rspec,
                        :fixtures => true,
                        :integration_tool => false,
-                       :spec_routes => true,
-                       :spec_views => false
+                       :routes => true,
+                       :views => false
 
     g.integration_tool :rspec
   end
