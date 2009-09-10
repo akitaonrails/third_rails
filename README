@@ -1,6 +1,6 @@
 = Third Rails
 
-This is a proof of concept with Rails 3.0 generators.
+This is a proof of concept with Rails 3.0 generators and Orchestra instrumentation.
 
 == Dependencies
 
@@ -13,6 +13,8 @@ Rails is vendored:
 
 It includes generators for datamapper and rspec to show how agnosticism works.
 Check them at "lib/generators" and their configuration at "config/environment.rb"
+
+It also runs with Rack::Bug and a couple visualization panels.
 
 == Usage
 
