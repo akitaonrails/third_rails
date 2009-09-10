@@ -1,9 +1,10 @@
 require 'generators/rspec'
+require 'generators/resource_helpers'
 
 module Rspec
   module Generators
     class ScaffoldGenerator < Base
-      include Rails::Generators::ScaffoldBase
+      include Rails::Generators::ResourceHelpers
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
 
       class_option :orm, :desc => "ORM used to generate the controller"
