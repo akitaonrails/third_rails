@@ -1,9 +1,6 @@
 [submodule "vendor/rails"]
 	path = vendor/rails
 	url = git://github.com/josevalim/rails.git
-[submodule "vendor/plugins/orchestra"]
-	path = vendor/plugins/orchestra
-	url = git://github.com/josevalim/orchestra.git
 [submodule "vendor/plugins/rack-bug"]
 	path = vendor/plugins/rack-bug
 	url = git://github.com/josevalim/rack-bug.git
