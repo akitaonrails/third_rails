@@ -4,6 +4,11 @@
 RAILS_ROOT = "#{File.dirname(__FILE__)}/.." unless defined?(RAILS_ROOT)
 
 module Rails
+  # Mark the version of Rails that generated the boot.rb file. This is
+  # a temporary solution and will most likely be removed as Rails 3.0
+  # comes closer.
+  BOOTSTRAP_VERSION = "3.0"
+
   class << self
     def boot!
       unless booted?
@@ -35,16 +40,49 @@ module Rails
 
   class Boot
     def run
+      set_load_paths
       load_initializer
-      Rails::Initializer.run(:set_load_path)
+    end
+
+    def set_load_paths
+      %w(
+        actionmailer/lib
+        actionpack/lib
+        activemodel/lib
+        activerecord/lib
+        activeresource/lib
+        activesupport/lib
+        railties/lib
+        railties
+      ).reverse_each do |path|
+        path = "#{framework_root_path}/#{path}"
+        $LOAD_PATH.unshift(path) if File.directory?(path)
+        $LOAD_PATH.uniq!
+      end
+    end
+
+    def framework_root_path
+      defined?(::RAILS_FRAMEWORK_ROOT) ? ::RAILS_FRAMEWORK_ROOT : "#{RAILS_ROOT}/vendor/rails"
     end
   end
 
   class VendorBoot < Boot
     def load_initializer
-      require "#{RAILS_ROOT}/vendor/rails/railties/lib/initializer"
-      Rails::Initializer.run(:install_gem_spec_stubs)
+      require "rails"
+      install_gem_spec_stubs
       Rails::GemDependency.add_frozen_gem_path
+    end
+
+    def install_gem_spec_stubs
+      begin; require "rubygems"; rescue LoadError; return; end
+
+      %w(rails activesupport activerecord actionpack actionmailer activeresource).each do |stub|
+        Gem.loaded_specs[stub] ||= Gem::Specification.new do |s|
+          s.name = stub
+          s.version = Rails::VERSION::STRING
+          s.loaded_from = ""
+        end
+      end
     end
   end
 
@@ -52,7 +90,7 @@ module Rails
     def load_initializer
       self.class.load_rubygems
       load_rails_gem
-      require 'initializer'
+      require 'rails'
     end
 
     def load_rails_gem
@@ -82,8 +120,8 @@ module Rails
       end
 
       def load_rubygems
+        min_version = '1.3.2'
         require 'rubygems'
-        min_version = '1.3.1'
         unless rubygems_version >= min_version
           $stderr.puts %Q(Rails requires RubyGems >= #{min_version} (you have #{rubygems_version}). Please `gem update --system` and try again.)
           exit 1

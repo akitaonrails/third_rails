@@ -1,36 +1,4 @@
-= Third Rails
-
-This is a proof of concept with Rails 3.0 generators and Orchestra instrumentation.
-
-== Dependencies
-
-Rails is vendored:
-
-  git submodule init
-  git submodule update
-
-== Why?
-
-It includes generators for datamapper and rspec to show how agnosticism works.
-Check them at "lib/generators" and their configuration at "config/environment.rb"
-
-It also runs with Rack::Bug and a couple visualization panels.
-
-== Usage
-
-  # Show available generators
-  ruby script/generate
-
-  # Install rspec
-  ruby script/generate rspec:install
-
-  # Show scaffold options
-  ruby script/generate scaffold
-
-  # Invoke!
-  ruby script/generate scaffold ModelName
-
-== Finally... Welcome to Rails 3.0!
+== Welcome to Rails
 
 Rails is a web-application framework that includes everything needed to create 
 database-backed web applications according to the Model-View-Control pattern. 
@@ -79,6 +47,50 @@ More info at: http://mongrel.rubyforge.org
 Say other Ruby web servers like Thin and Ebb or regular web servers like Apache or LiteSpeed or
 Lighttpd or IIS. The Ruby web servers are run through Rack and the latter can either be setup to use
 FCGI or proxy to a pack of Mongrels/Thin/Ebb servers.
+
+== Apache .htaccess example for FCGI/CGI
+
+# General Apache options
+AddHandler fastcgi-script .fcgi
+AddHandler cgi-script .cgi
+Options +FollowSymLinks +ExecCGI
+
+# If you don't want Rails to look in certain directories,
+# use the following rewrite rules so that Apache won't rewrite certain requests
+# 
+# Example:
+#   RewriteCond %{REQUEST_URI} ^/notrails.*
+#   RewriteRule .* - [L]
+
+# Redirect all requests not available on the filesystem to Rails
+# By default the cgi dispatcher is used which is very slow
+# 
+# For better performance replace the dispatcher with the fastcgi one
+#
+# Example:
+#   RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]
+RewriteEngine On
+
+# If your Rails application is accessed via an Alias directive,
+# then you MUST also set the RewriteBase in this htaccess file.
+#
+# Example:
+#   Alias /myrailsapp /path/to/myrailsapp/public
+#   RewriteBase /myrailsapp
+
+RewriteRule ^$ index.html [QSA]
+RewriteRule ^([^.]+)$ $1.html [QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ dispatch.cgi [QSA,L]
+
+# In case Rails experiences terminal errors
+# Instead of displaying this message you can supply a file here which will be rendered instead
+# 
+# Example:
+#   ErrorDocument 500 /500.html
+
+ErrorDocument 500 "<h2>Application error</h2>Rails application failed to start properly"
+
 
 == Debugging Rails
 
