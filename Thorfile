@@ -5,5 +5,5 @@ require 'rake/rdoctask'
 
 class Default < Thor
   include Thor::RakeCompat
-  require 'tasks/rails'
+  require 'rails/tasks'
 end
