@@ -177,6 +177,7 @@ break. If your project as generators, learn how to rewrite them.
 
 Cheers
 
-== Author
+== Authors
 
+José Valim (http://blog.plataformatec.com.br/)
 Fabio Akita (http://www.akitaonrails.com)
