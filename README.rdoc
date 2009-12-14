@@ -33,6 +33,19 @@ There are 2 ways to use this project: with shared gems, or local gems.
 The simple approach right now is to just do this:
 
   git clone git://github.com/akitaonrails/third_rails.git
+
+You need to have the Rails source project somewhere as well:
+
+	git clone git://github.com/rails/rails.git
+	cd rails
+	git submodule init
+	git submodule update
+
+Now edit the <tt>Gemfile</tt> inside the 'third_rails' project you just
+cloned and change the variable <tt>rails_source_path</tt> in the first
+line to the correct path of your Rails source project. After that you
+can do:
+
   cd third_rails
   gem bundle
 
