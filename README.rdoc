@@ -24,7 +24,43 @@ http://github.com/wycats/bundler
 
 All the necessary gems are already vendorized under vendor/gems and if
 the gem has executables, they will be at <tt>bin/</tt>, such as the
-'spec', 'rails' commands and others.
+'spec', 'rails' commands and others. Check out the next section.
+
+== Using Third Rails
+
+There are 2 ways to use this project: with shared gems, or local gems.
+
+The simple approach right now is to just do this:
+
+  git clone git://github.com/akitaonrails/third_rails.git
+  cd third_rails
+  gem bundle
+
+This will vendorize all needed gems inside the project's <tt>vendor/gems</tt> folder
+so everything works smoothly. You need to install the Bundler gem, see the 
+previous section.
+
+Talking to @josevalim he clarified what would be the optimal way to test
+this app and to create your own:
+
+	git clone git://github.com/rails/rails.git
+	cd rails
+	git submodule init
+	git submodule update
+	gem bundle
+
+Bundler will create a <tt>vendor/gems</tt> folder inside the Rails source project,
+then you need to edit the <tt>config/boot.rb</tt>, specifically this first line:
+
+  environment = File.expand_path('../../vendor/gems/environment', __FILE__)
+
+Replace the path for the correct path to your gems folder inside the Rails project.
+If you do this for every Rails 3 project, you will reuse the same gems. For example,
+my Rails project is in this path: <tt>~/Sites/rails/rails/vendor/gems/environment</tt>
+
+But there is a caveat: it will override the <tt>Gemfile</tt> in your project. So you
+won't be able to have project specific gems. So this is not good enough for normal
+development, but will do to quickly create a test project.
 
 == Rails 3.0 First Impressions (by @AkitaOnRails)
 
@@ -117,44 +153,23 @@ like this:
   ruby railties/bin/rails /path/to/new/project
   /path/to/new/project
 
-I am calling explicitly the ruby command because there is a missing
-shebang in the bin/rails script for some reason. Rails 3 Edge requires 
-Rack Edge. Right now Rack is in version 1.0.1. Check it out in your system 
-like this:
+Now, it is a good time to change your Rails Gemfile content for this:
 
-  gem list rack
+	gem "rake", ">= 0.8.7"
+	gem "mocha", ">= 0.9.8"
 
-If you see something like this:
+	gem "rails", "3.0.pre", :vendored_at => "railties"
+	%w(activesupport activemodel actionpack actionmailer activerecord activeresource).each do |lib|
+	  gem lib, '3.0.pre', :vendored_at => lib
+	end
 
-  *** LOCAL GEMS ***
-  rack (1.0.1, 1.0.0)
+	# AR
+	gem "arel", "0.2.pre", :git => "git://github.com/rails/arel.git"
+	gem "sqlite3-ruby", ">= 1.2.5"
 
-It won't work. You need to build a new Rack version from source:
-
-  git clone git://github.com/rack/rack.git
-  cd rack
-  rake officialrelease VERSION=1.0.2
-
-This may fail if you don't have the "test/spec" gem installed:
-
-  sudo gem install test-spec
-
-Then you can just do:
-
-  sudo gem install rack-1.0.2.gem
-
-This is only necessary because, for some strange reason, the Rack
-project doesn't have a gemspec, otherwise we could've only have
-declared it into the Rails' Gemfile. And speaking of which, it is a
-good time to change your Rails Gemfile content for this:
-
-	gem "rack",             ">= 1.0.2"
-	gem "arel",             :git => "git://github.com/rails/arel.git"
-	gem "rails", "3.0.pre", :git => "git://github.com/rails/rails.git"
-	gem "rack-mount"
-	gem "rack-test",        "~> 0.5.0"
-	gem "erubis",           "~> 2.6.0"
-	gem "sqlite3-ruby"
+	# AP
+	gem "rack", "1.0.1", :git => "git://github.com/rails/rack.git"
+	gem "RedCloth", ">= 4.2.2"
 
 Once you do it, you can choose to vendorize these gems into your
 project like this:
@@ -162,6 +177,9 @@ project like this:
   gem bundle
 
 Do not forget to install the bundler gem first, as I mentioned above.
+As I explained before, this will vendorize the gems inside your own
+project. If you don't want to duplicate your gems all the time, read
+the 'Using Third Rails' section above to understand how to 
 
 If everything goes fine, you should be able to start using the usual
 Rails commands:
@@ -178,6 +196,24 @@ you must re-test it against Rails 3 because it will most certainly
 break. If your project as generators, learn how to rewrite them.
 
 Cheers
+
+== Extras
+
+There is a custom generator for DataMapper to illustrate how other
+ORMs can also have Rails-like generators. Problem is, up to this
+point it is not yet clear to me how to Wrap DataMapper as an ActiveModel
+object. There will be a clear way to do it, but I have to research
+more how (anyone?)
+
+I've also added a still in development new plugin called Responder, 
+form the Plataforma Tec guys. This is a scaffold generator to create
+thinner controllers using <tt>respond_with</tt> instead of the usual more
+verbose <tt>respond_to</tt> version that is the Rails default.
+
+The included example controller was already generated that way and if you
+want to use this new generator, do this:
+
+  git submodule update --init
 
 == Authors
 

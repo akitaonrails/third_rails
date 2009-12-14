@@ -1,6 +1,3 @@
-[submodule "vendor/rails"]
-	path = vendor/rails
-	url = git://github.com/josevalim/rails.git
-[submodule "vendor/plugins/rack-bug"]
-	path = vendor/plugins/rack-bug
-	url = git://github.com/josevalim/rack-bug.git
+[submodule "vendor/plugins/responders"]
+	path = vendor/plugins/responders
+	url = git://github.com/plataformatec/responders.git

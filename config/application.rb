@@ -1,7 +1,7 @@
 require File.expand_path('../boot', __FILE__)
-require 'rack/bug'
+require 'data_mapper'
 
-class ThirdRails < Rails::Application
+class ThirdRail < Rails::Application
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
   # -- all .rb files in that directory are automatically loaded.
@@ -31,7 +31,9 @@ class ThirdRails < Rails::Application
   # Configure generators values. Many other options are available, be sure to
   # check the documentation.
   config.generators do |g|
-    g.orm              :datamapper
+    g.scaffold_controller :responders_controller
+    
+    # g.orm              :datamapper
 
     g.template_engine  :erb, :layout => true
 

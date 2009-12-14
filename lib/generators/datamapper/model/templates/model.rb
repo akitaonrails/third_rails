@@ -5,6 +5,6 @@ class <%= class_name %><%= "< #{options[:parent].classify}" if options[:parent] 
   property :id, Serial
 <% end -%>
 <% attributes.each do |attribute| -%>
-  property :<%= attribute.name -%>, <%= attribute.type_class -%>
+  property :<%= attribute.name %>, <%= attribute.type_class %>
 <% end -%>
 end
