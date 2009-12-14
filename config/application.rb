@@ -30,7 +30,7 @@ class ThirdRail < Rails::Application
   # Configure generators values. Many other options are available, be sure to
   # check the documentation.
   config.generators do |g|
-    g.scaffold_controller :responders_controller
+    # g.scaffold_controller :responders_controller
     
     # g.orm              :datamapper
 
