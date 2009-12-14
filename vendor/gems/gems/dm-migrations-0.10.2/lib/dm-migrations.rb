@@ -1,0 +1,1 @@
+require 'dm-migrations/migration'

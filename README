@@ -1,243 +1,182 @@
-== Welcome to Rails
+== Third Rails - Rails 3.0 Sample Application
 
-Rails is a web-application framework that includes everything needed to create 
-database-backed web applications according to the Model-View-Control pattern. 
+The original Third Rails was created by @josevalim and it is available here:
 
-This pattern splits the view (also called the presentation) into "dumb" templates
-that are primarily responsible for inserting pre-built data in between HTML tags.
-The model contains the "smart" domain objects (such as Account, Product, Person,
-Post) that holds all the business logic and knows how to persist themselves to
-a database. The controller handles the incoming requests (such as Save New Account,
-Update Product, Show Post) by manipulating the model and directing data to the view.
+  http://github.com/josevalim/third_rails
 
-In Rails, the model is handled by what's called an object-relational mapping
-layer entitled Active Record. This layer allows you to present the data from
-database rows as objects and embellish these data objects with business logic
-methods. You can read more about Active Record in
-link:files/vendor/rails/activerecord/README.html.
+It has very specific goals:
 
-The controller and view are handled by the Action Pack, which handles both
-layers by its two parts: Action View and Action Controller. These two layers
-are bundled in a single package due to their heavy interdependence. This is
-unlike the relationship between the Active Record and Action Pack that is much
-more separate. Each of these packages can be used independently outside of
-Rails.  You can read more about Action Pack in
-link:files/vendor/rails/actionpack/README.html.
+* showcase Rails 3.0 new folder structure
+* demonstrate the usage of custom generators
 
+This application is fully self-contained. In this fork I've done:
 
-== Getting Started
+* vendorized all needed gems
+* updated the railties files to the latest version
 
-1. At the command prompt, start a new Rails application using the <tt>rails</tt> command
-   and your application name. Ex: rails myapp
-2. Change directory into myapp and start the web server: <tt>script/server</tt> (run with --help for options)
-3. Go to http://localhost:3000/ and get "Welcome aboard: You're riding the Rails!"
-4. Follow the guidelines to start developing your application
+== Gem Bundler
 
+If you want to use the newest gem dependency manager support, you have 
+to install a separate gem called Bundler, from @wycatz, available here: 
+http://github.com/wycats/bundler
 
-== Web Servers
+  sudo gem install bundler
 
-By default, Rails will try to use Mongrel if it's are installed when started with script/server, otherwise Rails will use WEBrick, the webserver that ships with Ruby. But you can also use Rails
-with a variety of other web servers.
+All the necessary gems are already vendorized under vendor/gems and if
+the gem has executables, they will be at <tt>bin/</tt>, such as the
+'spec', 'rails' commands and others.
 
-Mongrel is a Ruby-based webserver with a C component (which requires compilation) that is
-suitable for development and deployment of Rails applications. If you have Ruby Gems installed,
-getting up and running with mongrel is as easy as: <tt>gem install mongrel</tt>.
-More info at: http://mongrel.rubyforge.org
+== Rails 3.0 First Impressions (by @AkitaOnRails)
 
-Say other Ruby web servers like Thin and Ebb or regular web servers like Apache or LiteSpeed or
-Lighttpd or IIS. The Ruby web servers are run through Rack and the latter can either be setup to use
-FCGI or proxy to a pack of Mongrels/Thin/Ebb servers.
+There are new files available in the structure:
 
-== Apache .htaccess example for FCGI/CGI
+* Gemfile - that's where you configure all the needed gems
+* config.ru - Rails fully supports Rack, and from now on, even script/server
+  bootstraps using Rack
 
-# General Apache options
-AddHandler fastcgi-script .fcgi
-AddHandler cgi-script .cgi
-Options +FollowSymLinks +ExecCGI
+The good old <tt>config/environment.rb</tt> is now lighter and it basically
+depends on a new file called <tt>config/application.rb</tt>. So, whatever you
+used to do in environment.rb you should now to at application.rb
 
-# If you don't want Rails to look in certain directories,
-# use the following rewrite rules so that Apache won't rewrite certain requests
-# 
-# Example:
-#   RewriteCond %{REQUEST_URI} ^/notrails.*
-#   RewriteRule .* - [L]
+All the old 2.x Rails generators will not work, so Rspec, Cucumber, and any
+other gem that supported generators will have to rewrite them to the new
+style which depends on Thor. In this project you can see how they will look
+like: take a look in <tt>lib/generators</tt> for examples. There you will find
+RSpec and DataMapper custom generators.
 
-# Redirect all requests not available on the filesystem to Rails
-# By default the cgi dispatcher is used which is very slow
-# 
-# For better performance replace the dispatcher with the fastcgi one
-#
-# Example:
-#   RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]
-RewriteEngine On
+If you want to use this project to start your own new Rails 3 project, don't 
+simply copy it. The new <tt>config/application.rb</tt> file declared a new
+class called <tt>ThirdRails</tt>, which is the name of your application, 
+and several other files expect to find this constant. So you need to update
+the following files to the new constant if you change the name of the app:
 
-# If your Rails application is accessed via an Alias directive,
-# then you MUST also set the RewriteBase in this htaccess file.
-#
-# Example:
-#   Alias /myrailsapp /path/to/myrailsapp/public
-#   RewriteBase /myrailsapp
+  config/application.rb
+  config/environment.rb
+  config.ru
+  script/console
+  script/dbconsole
+  script/server
 
-RewriteRule ^$ index.html [QSA]
-RewriteRule ^([^.]+)$ $1.html [QSA]
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ dispatch.cgi [QSA,L]
+It is well known that the Routes engine received a lot of attention and it
+also sports a refined DSL. Check out <tt>config/routes.rb</tt> as there are
+examples of usage. Basically, they rely on blocks instead of hashes now, so
+the old style would be:
 
-# In case Rails experiences terminal errors
-# Instead of displaying this message you can supply a file here which will be rendered instead
-# 
-# Example:
-#   ErrorDocument 500 /500.html
+  map.resources :posts, :member => { :first => :get }
 
-ErrorDocument 500 "<h2>Application error</h2>Rails application failed to start properly"
+And the new style becomes:
 
-
-== Debugging Rails
-
-Sometimes your application goes wrong.  Fortunately there are a lot of tools that
-will help you debug it and get it back on the rails.
-
-First area to check is the application log files.  Have "tail -f" commands running
-on the server.log and development.log. Rails will automatically display debugging
-and runtime information to these files. Debugging info will also be shown in the
-browser on requests from 127.0.0.1.
-
-You can also log your own messages directly into the log file from your code using
-the Ruby logger class from inside your controllers. Example:
-
-  class WeblogController < ActionController::Base
-    def destroy
-      @weblog = Weblog.find(params[:id])
-      @weblog.destroy
-      logger.info("#{Time.now} Destroyed Weblog ID ##{@weblog.id}!")
+  resources :posts do
+    member do
+      get :first
     end
   end
 
-The result will be a message in your log file along the lines of:
+Much cleaner if you ask me. Also don't forget the the Controller was also
+heavily revised and now supports @josevalim's Inherited Resources style.
+Check out his plugin to learn it today:
 
-  Mon Oct 08 14:22:29 +1000 2007 Destroyed Weblog ID #1
+  http://github.com/josevalim/inherited_resources/
 
-More information on how to use the logger is at http://www.ruby-doc.org/core/
+Rails now will bundle other 3rd party gems. It already had tztime for Time
+Zone support, Rack, and now Thor for the generators. Another interesting
+one is "Arel", described as "Relational Algebra for Ruby" or a way to write
+cleaner and more expressive SQL queries in Ruby style. Worth checking out
+its documentation. I didn't peek into ActiveRecord and ActiveModel but I
+bet they are replacing its own internal SQL handling for Arel:
 
-Also, Ruby documentation can be found at http://www.ruby-lang.org/ including:
+  http://github.com/nkallen/arel/
 
-* The Learning Ruby (Pickaxe) Book: http://www.ruby-doc.org/docs/ProgrammingRuby/
-* Learn to Program: http://pine.fm/LearnToProgram/  (a beginners guide)
+Rails is highly modularized now. You have the bare bone "Rails Metal" and
+you can even build a small Sinatra-like micro-framework as @wycatz explained:
 
-These two online (and free) books will bring you up to speed on the Ruby language
-and also on programming in general.
+  http://yehudakatz.com/2009/08/26/how-to-build-sinatra-on-rails-3/
 
+ActiveRecord and ActiveResource have also received a lot of love and the
+result is the extraction of ActiveModel as a separate project so you can build
+Model-like classes that do not rely neither on a database table or web service
+and still have all the validations, filters and other goodies.
 
-== Debugger
+== You want to start a project from scratch
 
-Debugger support is available through the debugger command when you start your Mongrel or
-Webrick server with --debugger. This means that you can break out of execution at any point
-in the code, investigate and change the model, AND then resume execution! 
-You need to install ruby-debug to run the server in debugging mode. With gems, use 'gem install ruby-debug'
-Example:
+When Rails 3 gets released you can simply do:
 
-  class WeblogController < ActionController::Base
-    def index
-      @posts = Post.find(:all)
-      debugger
-    end
-  end
+  sudo gem install rails
+  rails my_project
 
-So the controller will accept the action, run the first line, then present you
-with a IRB prompt in the server window. Here you can do things like:
+But, while it doesn't happen, you need to go straight to the source:
 
-  >> @posts.inspect
-  => "[#<Post:0x14a6be8 @attributes={\"title\"=>nil, \"body\"=>nil, \"id\"=>\"1\"}>,
-       #<Post:0x14a6620 @attributes={\"title\"=>\"Rails you know!\", \"body\"=>\"Only ten..\", \"id\"=>\"2\"}>]"
-  >> @posts.first.title = "hello from a debugger"
-  => "hello from a debugger"
+  git clone git://github.com/rails/rails.git
+  cd rails
+  git submodule init
+  git submodule update
 
-...and even better is that you can examine how your runtime objects actually work:
+From within the Rails project folder, you can create a new project 
+like this:
 
-  >> f = @posts.first
-  => #<Post:0x13630c4 @attributes={"title"=>nil, "body"=>nil, "id"=>"1"}>
-  >> f.
-  Display all 152 possibilities? (y or n)
+  railties/bin/rails /path/to/new/project
+  /path/to/new/project
 
-Finally, when you're ready to resume execution, you enter "cont"
+Rails 3 Edge requires Rack Edge. Right now Rack is in version 1.0.1.
+Check it out in your system like this:
 
+  gem list rack
 
-== Console
+If you see something like this:
 
-You can interact with the domain model by starting the console through <tt>script/console</tt>.
-Here you'll have all parts of the application configured, just like it is when the
-application is running. You can inspect domain models, change values, and save to the
-database. Starting the script without arguments will launch it in the development environment.
-Passing an argument will specify a different environment, like <tt>script/console production</tt>.
+	*** LOCAL GEMS ***
+	rack (1.0.1, 1.0.0)
 
-To reload your controllers and models after launching the console run <tt>reload!</tt>
+It won't work. You need to build a new Rack version from source:
 
-== dbconsole
+  git clone git://github.com/rack/rack.git
+  cd rack
+  rake officialrelease VERSION=1.0.2
 
-You can go to the command line of your database directly through <tt>script/dbconsole</tt>.
-You would be connected to the database with the credentials defined in database.yml.
-Starting the script without arguments will connect you to the development database. Passing an
-argument will connect you to a different database, like <tt>script/dbconsole production</tt>.
-Currently works for mysql, postgresql and sqlite.
+This may fail if you don't have the "test/spec" gem installed:
 
-== Description of Contents
+  sudo gem install test-spec
 
-app
-  Holds all the code that's specific to this particular application.
+Then you can just do:
 
-app/controllers
-  Holds controllers that should be named like weblogs_controller.rb for
-  automated URL mapping. All controllers should descend from ApplicationController
-  which itself descends from ActionController::Base.
+  sudo gem install rack-1.0.2.gem
 
-app/models
-  Holds models that should be named like post.rb.
-  Most models will descend from ActiveRecord::Base.
+This is only necessary because, for some strange reason, the Rack
+project doesn't have a gemspec, otherwise we could've only have
+declared it into the Rails' Gemfile. And speaking of which, it is a
+good time to change your Rails Gemfile content for this:
 
-app/views
-  Holds the template files for the view that should be named like
-  weblogs/index.html.erb for the WeblogsController#index action. All views use eRuby
-  syntax.
+	gem "rack",             ">= 1.0.2"
+	gem "arel",             :git => "git://github.com/rails/arel.git"
+	gem "rails", "3.0.pre", :git => "git://github.com/rails/rails.git"
+	gem "rack-mount"
+	gem "rack-test",        "~> 0.5.0"
+	gem "erubis",           "~> 2.6.0"
+	gem "sqlite3-ruby"
 
-app/views/layouts
-  Holds the template files for layouts to be used with views. This models the common
-  header/footer method of wrapping views. In your views, define a layout using the
-  <tt>layout :default</tt> and create a file named default.html.erb. Inside default.html.erb,
-  call <% yield %> to render the view using this layout.
+One you do it, you can choose to vendorize these gems into your
+project like this:
 
-app/helpers
-  Holds view helpers that should be named like weblogs_helper.rb. These are generated
-  for you automatically when using script/generate for controllers. Helpers can be used to
-  wrap functionality for your views into methods.
+  gem bundle
 
-config
-  Configuration files for the Rails environment, the routing map, the database, and other dependencies.
+Do not forget to install the bundler gem first, as I mentioned above.
 
-db
-  Contains the database schema in schema.rb.  db/migrate contains all
-  the sequence of Migrations for your schema.
+If everything goes fine, you should be able to start using the usual
+Rails commands:
 
-doc
-  This directory is where your application documentation will be stored when generated
-  using <tt>rake doc:app</tt>
+  script/generate
+  script/console
+  script/server
 
-lib
-  Application specific libraries. Basically, any kind of custom code that doesn't
-  belong under controllers, models, or helpers. This directory is in the load path.
+This should make you prepared to start learning Rails 3. And if you
+are a Gem or Rails Plugin developer: *NOW* is the time to start
+updating and testing your projects!! Remember: a *lot* has changed
+under the hoods, so if your project rely on *any* monkey-patching
+you must re-test it against Rails 3 because it will most certainly
+break. If your project as generators, learn how to rewrite them.
 
-public
-  The directory available for the web server. Contains subdirectories for images, stylesheets,
-  and javascripts. Also contains the dispatchers and the default HTML files. This should be
-  set as the DOCUMENT_ROOT of your web server.
+Cheers
 
-script
-  Helper scripts for automation and generation.
+== Author
 
-test
-  Unit and functional tests along with fixtures. When using the script/generate scripts, template
-  test files will be generated for you and placed in this directory.
-
-vendor
-  External libraries that the application depends on. Also includes the plugins subdirectory.
-  If the app has frozen rails, those gems also go here, under vendor/rails/.
-  This directory is in the load path.
+Fabio Akita (http://www.akitaonrails.com)

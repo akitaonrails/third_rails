@@ -1,0 +1,15 @@
+= data_mapper
+
+data_mapper is a meta gem which requires and includes dm-core and
+the most commonly used gems from dm-more.
+
+Included gems are:
+
+*  dm-core
+*  dm-aggregates
+*  dm-constraints
+*  dm-migrations
+*  dm-serializer
+*  dm-timestamps
+*  dm-validations
+*  dm-types
