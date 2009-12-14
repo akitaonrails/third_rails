@@ -1,0 +1,182 @@
+== Third Rails - Rails 3.0 Sample Application
+
+The original Third Rails was created by @josevalim and it is available here:
+
+  http://github.com/josevalim/third_rails
+
+It has very specific goals:
+
+* showcase Rails 3.0 new folder structure
+* demonstrate the usage of custom generators
+
+This application is fully self-contained. In this fork I've done:
+
+* vendorized all needed gems
+* updated the railties files to the latest version
+
+== Gem Bundler
+
+If you want to use the newest gem dependency manager support, you have 
+to install a separate gem called Bundler, from @wycatz, available here: 
+http://github.com/wycats/bundler
+
+  sudo gem install bundler
+
+All the necessary gems are already vendorized under vendor/gems and if
+the gem has executables, they will be at <tt>bin/</tt>, such as the
+'spec', 'rails' commands and others.
+
+== Rails 3.0 First Impressions (by @AkitaOnRails)
+
+There are new files available in the structure:
+
+* Gemfile - that's where you configure all the needed gems
+* config.ru - Rails fully supports Rack, and from now on, even script/server
+  bootstraps using Rack
+
+The good old <tt>config/environment.rb</tt> is now lighter and it basically
+depends on a new file called <tt>config/application.rb</tt>. So, whatever you
+used to do in environment.rb you should now to at application.rb
+
+All the old 2.x Rails generators will not work, so Rspec, Cucumber, and any
+other gem that supported generators will have to rewrite them to the new
+style which depends on Thor. In this project you can see how they will look
+like: take a look in <tt>lib/generators</tt> for examples. There you will find
+RSpec and DataMapper custom generators.
+
+If you want to use this project to start your own new Rails 3 project, don't 
+simply copy it. The new <tt>config/application.rb</tt> file declared a new
+class called <tt>ThirdRails</tt>, which is the name of your application, 
+and several other files expect to find this constant. So you need to update
+the following files to the new constant if you change the name of the app:
+
+  config/application.rb
+  config/environment.rb
+  config.ru
+  script/console
+  script/dbconsole
+  script/server
+
+It is well known that the Routes engine received a lot of attention and it
+also sports a refined DSL. Check out <tt>config/routes.rb</tt> as there are
+examples of usage. Basically, they rely on blocks instead of hashes now, so
+the old style would be:
+
+  map.resources :posts, :member => { :first => :get }
+
+And the new style becomes:
+
+  resources :posts do
+    member do
+      get :first
+    end
+  end
+
+Much cleaner if you ask me. Also don't forget the the Controller was also
+heavily revised and now supports @josevalim's Inherited Resources style.
+Check out his plugin to learn it today:
+
+  http://github.com/josevalim/inherited_resources/
+
+Rails now will bundle other 3rd party gems. It already had tztime for Time
+Zone support, Rack, and now Thor for the generators. Another interesting
+one is "Arel", described as "Relational Algebra for Ruby" or a way to write
+cleaner and more expressive SQL queries in Ruby style. Worth checking out
+its documentation. I didn't peek into ActiveRecord and ActiveModel but I
+bet they are replacing its own internal SQL handling for Arel:
+
+  http://github.com/nkallen/arel/
+
+Rails is highly modularized now. You have the bare bone "Rails Metal" and
+you can even build a small Sinatra-like micro-framework as @wycatz explained:
+
+  http://yehudakatz.com/2009/08/26/how-to-build-sinatra-on-rails-3/
+
+ActiveRecord and ActiveResource have also received a lot of love and the
+result is the extraction of ActiveModel as a separate project so you can build
+Model-like classes that do not rely neither on a database table or web service
+and still have all the validations, filters and other goodies.
+
+== You want to start a project from scratch
+
+When Rails 3 gets released you can simply do:
+
+  sudo gem install rails
+  rails my_project
+
+But, while it doesn't happen, you need to go straight to the source:
+
+  git clone git://github.com/rails/rails.git
+  cd rails
+  git submodule init
+  git submodule update
+
+From within the Rails project folder, you can create a new project 
+like this:
+
+  railties/bin/rails /path/to/new/project
+  /path/to/new/project
+
+Rails 3 Edge requires Rack Edge. Right now Rack is in version 1.0.1.
+Check it out in your system like this:
+
+  gem list rack
+
+If you see something like this:
+
+	*** LOCAL GEMS ***
+	rack (1.0.1, 1.0.0)
+
+It won't work. You need to build a new Rack version from source:
+
+  git clone git://github.com/rack/rack.git
+  cd rack
+  rake officialrelease VERSION=1.0.2
+
+This may fail if you don't have the "test/spec" gem installed:
+
+  sudo gem install test-spec
+
+Then you can just do:
+
+  sudo gem install rack-1.0.2.gem
+
+This is only necessary because, for some strange reason, the Rack
+project doesn't have a gemspec, otherwise we could've only have
+declared it into the Rails' Gemfile. And speaking of which, it is a
+good time to change your Rails Gemfile content for this:
+
+	gem "rack",             ">= 1.0.2"
+	gem "arel",             :git => "git://github.com/rails/arel.git"
+	gem "rails", "3.0.pre", :git => "git://github.com/rails/rails.git"
+	gem "rack-mount"
+	gem "rack-test",        "~> 0.5.0"
+	gem "erubis",           "~> 2.6.0"
+	gem "sqlite3-ruby"
+
+One you do it, you can choose to vendorize these gems into your
+project like this:
+
+  gem bundle
+
+Do not forget to install the bundler gem first, as I mentioned above.
+
+If everything goes fine, you should be able to start using the usual
+Rails commands:
+
+  script/generate
+  script/console
+  script/server
+
+This should make you prepared to start learning Rails 3. And if you
+are a Gem or Rails Plugin developer: *NOW* is the time to start
+updating and testing your projects!! Remember: a *lot* has changed
+under the hoods, so if your project rely on *any* monkey-patching
+you must re-test it against Rails 3 because it will most certainly
+break. If your project as generators, learn how to rewrite them.
+
+Cheers
+
+== Author
+
+Fabio Akita (http://www.akitaonrails.com)
