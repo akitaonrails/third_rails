@@ -36,10 +36,10 @@ The simple approach right now is to just do this:
 
 You need to have the Rails source project somewhere as well:
 
-	git clone git://github.com/rails/rails.git
-	cd rails
-	git submodule init
-	git submodule update
+  git clone git://github.com/rails/rails.git
+  cd rails
+  git submodule init
+  git submodule update
 
 Now edit the <tt>Gemfile</tt> inside the 'third_rails' project you just
 cloned and change the variable <tt>rails_source_path</tt> in the first
@@ -53,14 +53,14 @@ This will vendorize all needed gems inside the project's <tt>vendor/gems</tt> fo
 so everything works smoothly. You need to install the Bundler gem, see the 
 previous section.
 
-Talking to @josevalim he clarified what would be the optimal way to test
-this app and to create your own:
+Talking to @josevalim he clarified what would be the easy way to just test
+this app and to create your own test bed. Again, you will need the Rails source project:
 
-	git clone git://github.com/rails/rails.git
-	cd rails
-	git submodule init
-	git submodule update
-	gem bundle
+  git clone git://github.com/rails/rails.git
+  cd rails
+  git submodule init
+  git submodule update
+  gem bundle
 
 Bundler will create a <tt>vendor/gems</tt> folder inside the Rails source project,
 then you need to edit the <tt>config/boot.rb</tt>, specifically this first line:
@@ -127,6 +127,12 @@ Check out his plugin to learn it today:
 
   http://github.com/josevalim/inherited_resources/
 
+Just for now, there seems to be a glitch in the new Routing DSL. If I do
+<tt>map.resources :people</tt> everything works correctly. If I use the
+new <tt>resources :people</tt>, then pluralization gets messed up and I
+end up having routes like <tt>/peoples</tt>. It's probably gonna be 
+fixed before release.
+
 Rails now will bundle other 3rd party gems. It already had tztime for Time
 Zone support, Rack, and now Thor for the generators. Another interesting
 one is "Arel", described as "Relational Algebra for Ruby" or a way to write
@@ -146,6 +152,11 @@ result is the extraction of ActiveModel as a separate project so you can build
 Model-like classes that do not rely neither on a database table or web service
 and still have all the validations, filters and other goodies.
 
+If you're a DataMapper, Sequel or other ORM developer, take a look into the
+<tt>ActiveModel::Lint::Tests</tt> module inside the Rails/ActiveModel project.
+They delineate the requirements for you to create a thin adapter layer for your
+ORM so Rails can transparently use it. 
+
 == You want to start a project from scratch
 
 When Rails 3 gets released you can simply do:
@@ -153,7 +164,7 @@ When Rails 3 gets released you can simply do:
   sudo gem install rails
   rails my_project
 
-But, while it doesn't happen, you need to go straight to the source:
+But, while it doesn't happen, you need to go straight to the source, so, again:
 
   git clone git://github.com/rails/rails.git
   cd rails
@@ -168,31 +179,33 @@ like this:
 
 Now, it is a good time to change your Rails Gemfile content for this:
 
-	gem "rake", ">= 0.8.7"
-	gem "mocha", ">= 0.9.8"
+  rails_source_path = "/Users/akitaonrails/Sites/rails/rails/"
+  
+  gem "rake", ">= 0.8.7"
+  gem "mocha", ">= 0.9.8"
+  
+  gem "rails", "3.0.pre", :path => "#{rails_source_path}railties"
+  %w(activesupport activemodel actionpack actionmailer activerecord activeresource).each do |lib|
+    gem lib, '3.0.pre', :path => "#{rails_source_path}#{lib}"
+  end
+  
+  # AR
+  gem "arel", "0.2.pre", :git => "git://github.com/rails/arel.git"
+  gem "sqlite3-ruby", ">= 1.2.5"
+  
+  # AP
+  gem "rack", "1.0.1", :git => "git://github.com/rails/rack.git"
 
-	gem "rails", "3.0.pre", :vendored_at => "railties"
-	%w(activesupport activemodel actionpack actionmailer activerecord activeresource).each do |lib|
-	  gem lib, '3.0.pre', :vendored_at => lib
-	end
-
-	# AR
-	gem "arel", "0.2.pre", :git => "git://github.com/rails/arel.git"
-	gem "sqlite3-ruby", ">= 1.2.5"
-
-	# AP
-	gem "rack", "1.0.1", :git => "git://github.com/rails/rack.git"
-	gem "RedCloth", ">= 4.2.2"
-
-Once you do it, you can choose to vendorize these gems into your
-project like this:
+Again, change the <tt>rails_source_path</tt> to the path of the Rails source
+project you just cloned. Once you do it, you can choose to vendorize these gems 
+into your project like this:
 
   gem bundle
 
-Do not forget to install the bundler gem first, as I mentioned above.
-As I explained before, this will vendorize the gems inside your own
-project. If you don't want to duplicate your gems all the time, read
-the 'Using Third Rails' section above to understand how to 
+Do not forget to install the bundler gem first, as I mentioned before.
+This will vendorize the gems inside your own project. If you don't want to duplicate
+your gems all the time, read the 'Using Third Rails' section above to
+understand how to have a shared gems repository within your Rails source project.
 
 If everything goes fine, you should be able to start using the usual
 Rails commands:
