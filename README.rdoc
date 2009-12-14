@@ -114,18 +114,20 @@ But, while it doesn't happen, you need to go straight to the source:
 From within the Rails project folder, you can create a new project 
 like this:
 
-  railties/bin/rails /path/to/new/project
+  ruby railties/bin/rails /path/to/new/project
   /path/to/new/project
 
-Rails 3 Edge requires Rack Edge. Right now Rack is in version 1.0.1.
-Check it out in your system like this:
+I am calling explicitly the ruby command because there is a missing
+shebang in the bin/rails script for some reason. Rails 3 Edge requires 
+Rack Edge. Right now Rack is in version 1.0.1. Check it out in your system 
+like this:
 
   gem list rack
 
 If you see something like this:
 
-	*** LOCAL GEMS ***
-	rack (1.0.1, 1.0.0)
+  *** LOCAL GEMS ***
+  rack (1.0.1, 1.0.0)
 
 It won't work. You need to build a new Rack version from source:
 
@@ -154,7 +156,7 @@ good time to change your Rails Gemfile content for this:
 	gem "erubis",           "~> 2.6.0"
 	gem "sqlite3-ruby"
 
-One you do it, you can choose to vendorize these gems into your
+Once you do it, you can choose to vendorize these gems into your
 project like this:
 
   gem bundle
@@ -179,5 +181,5 @@ Cheers
 
 == Authors
 
-José Valim (http://blog.plataformatec.com.br/)
-Fabio Akita (http://www.akitaonrails.com)
+* José Valim (http://blog.plataformatec.com.br/)
+* Fabio Akita (http://www.akitaonrails.com)

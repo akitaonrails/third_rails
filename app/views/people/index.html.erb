@@ -11,8 +11,8 @@
 
 <% @people.each do |person| %>
   <tr>
-    <td><%=h person.name %></td>
-    <td><%=h person.age %></td>
+    <td><%= person.name %></td>
+    <td><%= person.age %></td>
     <td><%= link_to 'Show', person %></td>
     <td><%= link_to 'Edit', edit_person_path(person) %></td>
     <td><%= link_to 'Destroy', person, :confirm => 'Are you sure?', :method => :delete %></td>
