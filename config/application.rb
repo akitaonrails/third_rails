@@ -1,5 +1,4 @@
 require File.expand_path('../boot', __FILE__)
-require 'data_mapper'
 
 class ThirdRail < Rails::Application
   # Settings in config/environments/* take precedence over those specified here.
