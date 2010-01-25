@@ -1,5 +1,5 @@
 # Edit this Gemfile to bundle your application's dependencies.
-rails_source_path = "/Users/akitaonrails/Sites/rails/rails/"
+rails_source_path = "/Users/akitaonrails/Sites/github/rails/"
 
 gem "rake", ">= 0.8.7"
 gem "mocha", ">= 0.9.8"
